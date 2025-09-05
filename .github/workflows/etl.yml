@@ -35,11 +35,11 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-              
-      - name: Compile & Install deps
+
+      - name: Install deps
         run: |
-          uv pip compile requirements.in --output-file requirements.txt
-          uv pip install -r requirements.txt
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
       - name: Run ETL (one-shot)
         env:
@@ -49,6 +49,7 @@ jobs:
           CLOUDINARY_NAME: ${{ secrets.CLOUDINARY_NAME }}
           CLOUDINARY_API_KEY : ${{ secrets.CLOUDINARY_API_KEY }}
           CLOUDINARY_API_SECRET_KEY : ${{ secrets.CLOUDINARY_API_SECRET_KEY }}
+
           API_PREFIX: "/api"
           ENV: "prod"
         run: |
