@@ -19,7 +19,7 @@ def load_category_img(result: list[dict]):
             
             upload_result = cloudinary.uploader.upload(
                 url,
-                public_id=f"chzzimg/{row.get("categoryId")}",   # 저장할 경로/이름
+                public_id=f"chzzimg/{row.get('categoryId')}",   # 저장할 경로/이름
                 overwrite=True,                     # 매번 덮어쓰기
                 invalidate=True                     # 캐시 무효화
             )
