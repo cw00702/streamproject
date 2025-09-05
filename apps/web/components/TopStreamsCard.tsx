@@ -4,6 +4,7 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { StreamCard } from "../lib/api";
+import Image from "next/image";
 
 export function TopStreamsPanel({ loading, categoryLabel, rows }: { loading: boolean; categoryLabel?: string; rows: StreamCard[] }) {
   return (
@@ -29,7 +30,15 @@ export function TopStreamsPanel({ loading, categoryLabel, rows }: { loading: boo
               </div>
               <div className="text-sm text-muted-foreground">{r.channelName}</div>
               {(r.secure_url || r.liveImageUrl) && (
-                <img src={(r.secure_url || r.liveImageUrl)!} alt="" className="w-full rounded-md mt-2" />
+                <div className="relative w-full h-40 mt-2">
+                  <Image
+                    src={(r.secure_url || r.liveImageUrl)!}
+                    alt={r.liveTitle ?? ""}
+                    fill               // 부모 div를 기준으로 가득 채움
+                    className="object-cover rounded-md"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                </div>
               )}
               {r.stream_url && (
                 <a href={r.stream_url} target="_blank" className="text-primary text-sm underline mt-2 inline-block">

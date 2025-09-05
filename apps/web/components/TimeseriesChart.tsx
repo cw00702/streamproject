@@ -1,9 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { EChartsOption, LineSeriesOption } from "echarts"; // ← LineSeriesOption 추가
+import type { EChartsOption, LineSeriesOption } from "echarts";
 import { useMemo } from "react";
-import type { TimePoint } from "../lib/api"; // ← alias 잡으면 이렇게
+import type { TimePoint } from "../lib/api";
 
 const EChartsReact = dynamic(() => import("echarts-for-react"), { ssr: false });
 
@@ -15,34 +15,32 @@ type Props = {
   onHoverCategory?: (categoryId: string | null) => void;
 };
 
+// ECharts mouseover에서 우리가 쓰는 데이터 최소 형태만 타입으로 명시
+type HoverParam = { data?: [number, number, string] };
+
 export default function TimeseriesChart({ data, idToLabel, mode, selectedIds, onHoverCategory }: Props) {
   const option: EChartsOption = useMemo(() => {
-    // 1) 카테고리별로 묶기
     const byCat: Record<string, TimePoint[]> = {};
     for (const r of data) (byCat[r.categoryId] ??= []).push(r);
 
-    // 2) 라인 시리즈로 "명시적" 타이핑
     const series: LineSeriesOption[] = (mode === "single" && selectedIds[0] ? [selectedIds[0]] : selectedIds).map((cid) => {
       const arr = (byCat[cid] || []).slice().sort((a, b) => +new Date(a.snapshotTs) - +new Date(b.snapshotTs));
 
-      // [time, value, categoryId] 튜플 타입을 명시
       const points: [number, number, string][] = arr.map((p) => [
         new Date(p.snapshotTs).getTime(),
         p.concurrentUserCount,
         p.categoryId,
       ]);
 
-      const s: LineSeriesOption = {
+      return {
         id: cid,
         name: idToLabel[cid] || cid,
-        type: "line",            // ← 'line' 리터럴 유지
+        type: "line",
         showSymbol: false,
         smooth: true,
         data: points,
-        // (선택) encode로 차원 의미를 알려주면 디버깅에 도움
         encode: { x: 0, y: 1 },
       };
-      return s;
     });
 
     const opt: EChartsOption = {
@@ -60,10 +58,11 @@ export default function TimeseriesChart({ data, idToLabel, mode, selectedIds, on
     return opt;
   }, [data, idToLabel, mode, selectedIds]);
 
-  const onEvents = {
-    mouseover: (params: any) => {
-      const cd = params?.data?.[2] as string | undefined; // 우리의 세 번째 차원(categoryId)
-      onHoverCategory?.(cd ?? null);
+  // any 대신 우리가 사용하는 최소 형태로 타입 지정
+  const onEvents: Record<string, (p: HoverParam) => void> = {
+    mouseover: (params) => {
+      const cd = params.data?.[2] ?? null;
+      onHoverCategory?.(cd);
     },
     globalout: () => onHoverCategory?.(null),
   };

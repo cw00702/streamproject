@@ -7,6 +7,7 @@ import TimeseriesChart from "../components/TimeseriesChart";
 import { TopStreamsPanel } from "../components/TopStreamsCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import type { CheckedState } from "@radix-ui/react-checkbox";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
@@ -86,7 +87,7 @@ export default function Page() {
                     <label key={c.id} className="flex items-center gap-2">
                       <Checkbox
                         checked={checked}
-                        onCheckedChange={(v) =>
+                        onCheckedChange={(v: CheckedState) =>
                           setSelected((prev) => (v ? Array.from(new Set([...prev, c.id])) : prev.filter((x) => x !== c.id)))
                         }
                       />
@@ -110,7 +111,7 @@ export default function Page() {
 
             <div>
               <div className="text-sm font-medium mb-2">보기</div>
-              <RadioGroup value={mode} onValueChange={(v: any) => setMode(v)}>
+              <RadioGroup value={mode} onValueChange={(v:"overlay" | "single") => setMode(v)}>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem id="overlay" value="overlay" />
                   <Label htmlFor="overlay">겹쳐보기</Label>
