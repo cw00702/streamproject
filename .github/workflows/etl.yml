@@ -35,11 +35,11 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-
-      - name: Install deps
+              
+      - name: Compile & Install deps
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          uv pip compile requirements.in --output-file requirements.txt
+          uv pip install -r requirements.txt
 
       - name: Run ETL (one-shot)
         env:
