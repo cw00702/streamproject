@@ -41,7 +41,7 @@ def load_stream_thumb(stream_data: dict):
         try:
             upload_result = cloudinary.uploader.upload(
                 url, 
-                public_id=f"chzzthumb/{row["categoryId"]}/rank_{row["rank"]}",   # 저장할 경로/이름
+                public_id=f"chzzthumb/{row['categoryId']}/rank_{row['rank']}",   # 저장할 경로/이름
                 overwrite=True,                     # 매번 덮어쓰기
                 invalidate=True                     # 캐시 무효화
             )

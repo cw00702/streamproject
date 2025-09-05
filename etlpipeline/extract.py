@@ -198,7 +198,7 @@ def add_thumb_url(stream_data: dict):
             if resolved:
                 row["thumb_url"] = resolved
             else:
-                print(f"Warning: Could not resolve thumb_url for {row["categoryId"]}, rank {row["rank"]}")
+                print(f"Warning: Could not resolve thumb_url")
     return stream_data
 
 def _fetch_top2_for_row(row, size=10, timeout=10):
