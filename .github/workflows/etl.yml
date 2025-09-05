@@ -49,7 +49,6 @@ jobs:
           CLOUDINARY_NAME: ${{ secrets.CLOUDINARY_NAME }}
           CLOUDINARY_API_KEY : ${{ secrets.CLOUDINARY_API_KEY }}
           CLOUDINARY_API_SECRET_KEY : ${{ secrets.CLOUDINARY_API_SECRET_KEY }}
-   # 쓰면 등록, 아니면 삭제
           API_PREFIX: "/api"
           ENV: "prod"
         run: |
