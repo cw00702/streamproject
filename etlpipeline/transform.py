@@ -17,17 +17,10 @@ def transform_for_category_totals(raw_rows: list[dict]) -> list[dict]:
         cvalue = (r.get("categoryValue") or "").strip()
         openLiveCount = int(r.get("openLiveCount") or 0)
         concurrentUserCount = int(r.get("concurrentUserCount") or 0)
-        p_url = (r.get("posterImageUrl") or "").strip()
-        s_url = (r.get("secure_url") or "").strip()
         cap_at = seoul_now.isoformat()
         # 필수 검증
         if not cid or not ctype or not cvalue:
             continue
-
-        if not is_abs_url(p_url):
-            p_url = None
-        if s_url and not is_abs_url(s_url):
-            s_url = None
 
         key = cid
         if key in seen:
@@ -57,7 +50,7 @@ def transform_for_current_top_streams(raw_rows: list[dict]) -> list[dict]:
         title = (r.get("liveTitle") or "").strip()
         UCount = int(r.get("concurrentUserCount") or 0)
         s_url = (r.get("stream_url") or "").strip()
-        t_url = (r.get("secure_url") or "").strip()
+        t_url = (r.get("thumb_url") or "").strip()
         chName = (r.get("channelName") or "").strip()
         chImageUrl = (r.get("channelImageUrl") or "").strip()
         cap_at = seoul_now.isoformat()
@@ -85,7 +78,7 @@ def transform_for_current_top_streams(raw_rows: list[dict]) -> list[dict]:
             "liveTitle": title[:512],        # 너무 긴 제목 방지
             "concurrentUserCount": max(UCount, 0),
             "stream_url": s_url,
-            "secure_url": t_url or None,
+            "thumb_url": t_url or None,
             "channelName" : chName,
             "channelImageUrl" : chImageUrl,
             "updated_at" : cap_at
