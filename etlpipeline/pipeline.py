@@ -18,8 +18,6 @@ def run_full_pipeline():
     category_totals = transform_for_category_totals(category_crawling)
     print("\n=== Transform END ===")
     #load to supabase
-    pprint(stream_data)
-    pprint(category_totals)
     upsert_category_totals(category_totals)
     upsert_current_top_streams(stream_data)
     print("\n=== Load END ===")
