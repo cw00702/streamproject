@@ -18,7 +18,7 @@ class StreamCard(BaseModel):
     liveTitle: str | None = None
     channelName: str | None = None
     stream_url: str | None = None
-    secure_url: str | None = None
+    thumb_url: str | None = None
     channelImageUrl: str | None = None
     liveImageUrl: str | None = None
     concurrentUserCount: int | None = None

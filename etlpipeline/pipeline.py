@@ -2,8 +2,8 @@ from __future__ import annotations
 from datetime import datetime, timezone
 import time
 from etlpipeline.extract import summarize_categories, get_streams_data_parallel, add_thumb_url, get_streams_data_parallel
-from etlpipeline.transform import transform_for_current_top_streams, transform_for_category_totals, add_thumb_url_parallel
-from etlpipeline.load import load_category_img, load_stream_thumb_parallel, upsert_category_totals, upsert_current_top_streams
+from etlpipeline.transform import transform_for_current_top_streams, transform_for_category_totals, add_thumb_url_parallel, transform_for_categories
+from etlpipeline.load import load_category_img, load_stream_thumb_parallel, upsert_category_totals, upsert_current_top_streams, upsert_categories
 from .config import targets
 from pprint import pprint
 
@@ -16,8 +16,10 @@ def run_full_pipeline():
     #transform
     stream_data = transform_for_current_top_streams(stream_data)
     category_totals = transform_for_category_totals(category_crawling)
+    categories_data = transform_for_categories(category_crawling)
     print("\n=== Transform END ===")
     #load to supabase
     upsert_category_totals(category_totals)
     upsert_current_top_streams(stream_data)
+    upsert_categories(categories_data)
     print("\n=== Load END ===")

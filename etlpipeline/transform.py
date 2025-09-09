@@ -5,6 +5,37 @@ from .utils import is_abs_url
 from .extract import resolve_thumb_url
 
 
+def transform_for_categories(raw_rows: list[dict]) -> list[dict]:
+    print("Transforming for categories...")
+    seoul_now = datetime.now(ZoneInfo("Asia/Seoul"))
+    out = []
+    seen = set()  # category_id 중복 방지
+    for r in raw_rows:
+        cid = (r.get("categoryId") or "").strip()
+        ctype = (r.get("categoryType") or "").strip()
+        cvalue = (r.get("categoryValue") or "").strip()
+        posterImageUrl = (r.get("posterImageUrl") or "").strip()
+        cap_at = seoul_now.isoformat()
+        # 필수 검증
+        if not cid or not ctype or not cvalue:
+            continue
+
+        key = cid
+        if key in seen:
+            continue
+        seen.add(key)
+
+        out.append({
+            "categoryId": cid,
+            "captured_at": cap_at,
+            "categoryValue": cvalue,
+            "post_url": posterImageUrl
+            
+            ############### 추가 필드 필요시 여기에
+            # updated_at은 DB default now()
+        })
+    return out
+
 
 def transform_for_category_totals(raw_rows: list[dict]) -> list[dict]:
     print("Transforming for categories...")

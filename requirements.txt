@@ -1,5 +1,4 @@
 backports.tarfile==1.2.0
-cloudinary==1.44.1
 dotenv==0.9.9
 jaraco.collections==5.1.0
 pysocks==1.7.1

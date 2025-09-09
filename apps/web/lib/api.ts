@@ -14,7 +14,7 @@ export type StreamCard = {
   liveTitle?: string | null;
   channelName?: string | null;
   stream_url?: string | null;
-  secure_url?: string | null;
+  thumb_url?: string | null;
   channelImageUrl?: string | null;
   liveImageUrl?: string | null;
   concurrentUserCount?: number | null;

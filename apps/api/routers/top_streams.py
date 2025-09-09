@@ -25,7 +25,7 @@ def get_top_streams(
         "liveTitle": r.get("liveTitle"),
         "channelName": r.get("channelName"),
         "stream_url": r.get("stream_url"),
-        "secure_url": r.get("secure_url"),
+        "thumb_url": r.get("thumb_url"),
         "channelImageUrl": r.get("channelImageUrl"),
         "liveImageUrl": r.get("liveImageUrl"),   # 스키마에 없으면 None
         "concurrentUserCount": int(r.get("concurrentUserCount") or 0),

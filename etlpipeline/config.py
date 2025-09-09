@@ -9,10 +9,6 @@ load_dotenv(env_path)
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
-CLOUDINARY_NAME = os.getenv("CLOUDINARY_NAME")
-CLOUDINARY_API_KEY = os.getenv("CLOUDINARY_API_KEY")
-CLOUDINARY_API_SECRET_KEY = os.getenv("CLOUDINARY_API_SECRET_KEY")
-
 DEFAULT_TIMEOUT = float(os.getenv("HTTP_TIMEOUT", "10"))
 DEFAULT_PAGE_SIZE = int(os.getenv("PAGE_SIZE", "30"))
 USER_AGENT = os.getenv("USER_AGENT", "Mozilla/5.0 (chzzk-insights crawler)")
@@ -55,12 +51,3 @@ try:
         sb = None
 except Exception:
     sb = None
-
-# Cloudinary
-import cloudinary  # type: ignore
-cloudinary.config(
-    cloud_name=CLOUDINARY_NAME,
-    api_key=CLOUDINARY_API_KEY,
-    api_secret=CLOUDINARY_API_SECRET_KEY,
-    secure=True,
-)

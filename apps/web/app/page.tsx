@@ -27,7 +27,7 @@ export default function Page() {
     Api.categories().then((r) => {
       setCats(r);
       // 최초 선택: 상위 3~5개 정도 자동 선택(원하면 비워둬도 OK)
-      setSelected(r.slice(0, 5).map((x) => x.id));
+      setSelected(r.slice(0, 1).map((x) => x.id));
     });
   }, []);
 

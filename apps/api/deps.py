@@ -19,7 +19,6 @@ def get_settings() -> Settings:
 
 @lru_cache
 def get_supabase():
-    # 서버에서만 사용해야 함(키 노출 금지)
     from supabase import create_client
     s = get_settings()
     return create_client(s.supabase_url, s.supabase_key)

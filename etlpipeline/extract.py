@@ -119,37 +119,6 @@ def summarize_categories(target_ids,
 def category_streams_url(categoryType: str, categoryId: str):
         return f"https://api.chzzk.naver.com/service/v2/categories/{categoryType}/{categoryId}/lives?"
 
-# 특정 카테고리의 스트림 데이터 수집 *Extract 3
-def get_streams_data(result: dict, start_index: int = 0): 
-    stream: dict[str, dict] = {}
-    for row in result:
-        BASE = category_streams_url(row["categoryType"], row["categoryId"])
-        params = {"size": 10}
-        response = requests.get(BASE, params=params, headers=HEADERS, timeout=10)
-        response.raise_for_status()
-        j = response.json()
-        items = (j.get("content") or {}).get("data") or []
-        
-        for i in range(2):
-            idx = i + start_index
-            channel = items[i].get("channel", {})
-            stream[idx] = {
-                "categoryId" : row.get("categoryId"),
-                "channelName" : channel.get("channelName"),
-                "stream_url" : f"https://chzzk.naver.com/live/{channel.get('channelId')}",
-                "channelId" : channel.get("channelId"),
-                'channelImageUrl': channel.get("channelImageUrl"),
-                'liveImageUrl' : items[i].get("liveImageUrl"),
-                'liveTitle' : items[i].get("liveTitle"),
-                'concurrentUserCount' : items[i].get("concurrentUserCount"),
-                'liveCategoryValue' : items[i].get("liveCategoryValue"),
-                "rank" : i + 1
-            }
-        start_index += 2
-    return stream
-# '.../image_{type}.jpg' 형태의 템플릿에서 유효한 실제 이미지 URL을 찾아 반환.
-
-
 # 템플릿이 아니면 그대로 검사하고, 200이면 그대로 반환.
 def resolve_thumb_url(url_template: str) -> str | None:
     """
@@ -202,7 +171,7 @@ def add_thumb_url(stream_data: dict):
     return stream_data
 
 def _fetch_top2_for_row(row, size=10, timeout=10):
-    base = category_streams_url(row["categoryType"], row["categoryId"])  # 네가 쓰던 그대로
+    base = category_streams_url(row["categoryType"], row["categoryId"])
     params = {"size": size}
     sess = _get_session()
     r = sess.get(base, params=params, headers=HEADERS, timeout=timeout)
@@ -228,11 +197,9 @@ def _fetch_top2_for_row(row, size=10, timeout=10):
         })
     return out
 
+# 특정 카테고리의 스트림 데이터 수집 *Extract 3
 def get_streams_data_parallel(rows: list[dict], start_index: int = 0, max_workers: int = 8) -> dict[int, dict]:
-    """
-    카테고리 row 리스트를 받아 카테고리당 상위 2개 방송을 병렬 수집.
-    반환 키/값 구조, 인덱싱 규칙(2개씩, +2)은 기존 get_streams_data와 동일.
-    """
+
     stream: dict[int, dict] = {}
     base_indices = [start_index + pos * 2 for pos in range(len(rows))]
 

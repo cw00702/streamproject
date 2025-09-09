@@ -10,7 +10,7 @@ export function TopStreamsPanel({ loading, categoryLabel, rows }: { loading: boo
   return (
     <Card className="sticky top-4">
       <CardHeader>
-        <CardTitle>스트림 상세{categoryLabel ? ` — ${categoryLabel}` : ""}</CardTitle>
+        <CardTitle>STREAM NOW{categoryLabel ? ` — ${categoryLabel}` : ""}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         {loading && (
@@ -29,10 +29,10 @@ export function TopStreamsPanel({ loading, categoryLabel, rows }: { loading: boo
                 <span className="text-sm opacity-70">#{r.rank}</span>
               </div>
               <div className="text-sm text-muted-foreground">{r.channelName}</div>
-              {(r.secure_url || r.liveImageUrl) && (
+              {r.thumb_url && (
                 <div className="relative w-full h-40 mt-2">
                   <Image
-                    src={(r.secure_url || r.liveImageUrl)!}
+                    src={(r.thumb_url)!}
                     alt={r.liveTitle ?? ""}
                     fill               // 부모 div를 기준으로 가득 채움
                     className="object-cover rounded-md"
@@ -42,7 +42,7 @@ export function TopStreamsPanel({ loading, categoryLabel, rows }: { loading: boo
               )}
               {r.stream_url && (
                 <a href={r.stream_url} target="_blank" className="text-primary text-sm underline mt-2 inline-block">
-                  방송 보기 →
+                  GO LIVE
                 </a>
               )}
             </div>
