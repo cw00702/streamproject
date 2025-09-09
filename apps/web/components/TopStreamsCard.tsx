@@ -12,7 +12,7 @@ export function TopStreamsPanel({ loading, categoryLabel, rows }: { loading: boo
       <CardHeader>
         <CardTitle>STREAM NOW{categoryLabel ? ` — ${categoryLabel}` : ""}</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-4">
         {loading && (
           <>
             <Skeleton className="h-6 w-2/3" />
@@ -47,6 +47,92 @@ export function TopStreamsPanel({ loading, categoryLabel, rows }: { loading: boo
               )}
             </div>
           ))}
+      </CardContent>
+    </Card>
+  );
+}
+
+// 고정 크기(16:9) 타일 그리드
+export function StreamGrid({
+  rows,
+  title = "STREAM NOW — 선택한 카테고리",
+  loading = false,
+}: {
+  rows: StreamCard[];
+  title?: string;
+  loading?: boolean;
+}) {
+  return (
+    <Card className="mt-6">
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {loading && (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {Array.from({ length: 10 }).map((_, i) => (
+              <div key={i} className="space-y-2">
+                <Skeleton className="w-full rounded-lg" style={{ aspectRatio: "16/9" }} />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-3 w-1/2" />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {!loading && rows.length === 0 && (
+          <p className="text-sm text-muted-foreground">선택한 카테고리의 라이브가 없어요.</p>
+        )}
+
+        {!loading && rows.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {rows.map((r, i) => (
+              <a
+                key={(r as any).id ?? r.stream_url ?? `${r.channelName}-${i}`}
+                href={r.stream_url ?? "#"}
+                target="_blank"
+                rel="noreferrer"
+                className="group block"
+                title={r.liveTitle ?? ""}
+              >
+                {/* 16:9 고정 비율 */}
+                <div className="relative w-full overflow-hidden rounded-lg bg-muted">
+                  <div className="pt-[56.25%]" />
+                  {r.thumb_url && (
+                    <Image
+                      src={r.thumb_url}
+                      alt={r.liveTitle ?? ""}
+                      fill
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.03]"
+                      sizes="(max-width: 768px) 50vw, (max-width: 1280px) 25vw, 20vw"
+                      priority={i < 4}
+                    />
+                  )}
+
+                  {/* 좌상단 LIVE */}
+                  <div className="absolute left-2 top-2 text-[11px] px-1.5 py-0.5 rounded bg-red-600 text-white">
+                    생방송
+                  </div>
+
+                  {/* 우상단 랭크(있으면) */}
+                  {typeof r.rank === "number" && (
+                    <div className="absolute right-2 top-2 text-[11px] px-1.5 py-0.5 rounded bg-black/55 text-white">
+                      #{r.rank}
+                    </div>
+                  )}
+                </div>
+
+                {/* 제목 / 채널 */}
+                <div className="mt-2 text-sm font-medium leading-tight line-clamp-1">
+                  {r.liveTitle ?? "(제목 없음)"}
+                </div>
+                <div className="text-xs text-muted-foreground line-clamp-1">
+                  {r.channelName ?? ""}
+                </div>
+              </a>
+            ))}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

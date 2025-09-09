@@ -49,10 +49,18 @@ export default function TimeseriesChart({ data, idToLabel, mode, selectedIds, on
         order: "valueDesc",
         valueFormatter: (v) => (typeof v === "number" ? v.toLocaleString() : String(v)),
       },
-      grid: { left: 40, right: 16, top: 24, bottom: 30 },
+      grid: { top: 40, left: 56, right: 16, bottom: 24, containLabel: true  },
       xAxis: { type: "time" },
-      yAxis: { type: "value", name: "동시 시청자", min: 0, boundaryGap: [0, "5%"] },
-      legend: { top: 0 },
+      yAxis: {type: "value",
+              name: "viewership",
+              nameTextStyle: {
+              fontSize: 20,      // ← 여기 키우면 됨
+              fontWeight: 500,
+              color: "#000000ff",
+              },
+      min: 0,
+      boundaryGap: [0, "5%"] },
+      legend: { top: 10, left: 180, type: "scroll"},
       series,
     };
     return opt;
@@ -67,5 +75,5 @@ export default function TimeseriesChart({ data, idToLabel, mode, selectedIds, on
     globalout: () => onHoverCategory?.(null),
   };
 
-  return <EChartsReact option={option} style={{ height: 520 }} onEvents={onEvents} />;
+  return <EChartsReact option={option} style={{ height: 800 }} onEvents={onEvents} />;
 }

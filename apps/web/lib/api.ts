@@ -1,7 +1,7 @@
 // apps/web/lib/api.ts
 const BASE = process.env.NEXT_PUBLIC_API_BASE as string;
 
-export type CategoryOption = { id: string; label: string };
+export type CategoryOption = { id: string; label: string; post_url : string};
 export type TimePoint = {
   categoryId: string;
   snapshotTs: string;           // 백엔드 응답 그대로
