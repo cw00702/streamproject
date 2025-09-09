@@ -26,8 +26,8 @@ def transform_for_categories(raw_rows: list[dict]) -> list[dict]:
         seen.add(key)
 
         out.append({
-            "categoryId": cid,
-            "captured_at": cap_at,
+            "id": cid,
+            "created_at": cap_at,
             "categoryValue": cvalue,
             "post_url": posterImageUrl
             

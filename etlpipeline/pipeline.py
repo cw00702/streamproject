@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 import time
 from etlpipeline.extract import summarize_categories, get_streams_data_parallel, add_thumb_url, get_streams_data_parallel
 from etlpipeline.transform import transform_for_current_top_streams, transform_for_category_totals, add_thumb_url_parallel, transform_for_categories
-from etlpipeline.load import load_category_img, load_stream_thumb_parallel, upsert_category_totals, upsert_current_top_streams, upsert_categories
+from etlpipeline.load import upsert_category_totals, upsert_current_top_streams, upsert_categories
 from .config import targets
 from pprint import pprint
 
