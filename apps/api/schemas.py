@@ -1,10 +1,11 @@
 from __future__ import annotations
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field,HttpUrl
 from datetime import datetime
 
 class CategoryOption(BaseModel):
-    id: str = Field(..., description="categoryId (categories.id)")
+    id: str = Field(..., description='categoryId."Id"')
     label: str = Field(..., description='categories."categoryValue"')
+    post_url: HttpUrl = Field(..., description='post_url."post_url"')
 
 class TimeSeriesPoint(BaseModel):
     categoryId: str

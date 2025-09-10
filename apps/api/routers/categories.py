@@ -11,4 +11,7 @@ def list_categories(sb = Depends(get_supabase), settings = Depends(get_settings)
     res = sb.table("categories").select("*").execute()
     data = res.data or []
     data.sort(key=lambda r: (r.get("categoryValue") or "").lower())
-    return [{"id": r["id"], "label": r.get("categoryValue") or r["id"]} for r in data]
+    return [{"id": r["id"],
+            "label": r.get("categoryValue") or r["id"],
+            "post_url":r.get("post_url")}
+            for r in data]

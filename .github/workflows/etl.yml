@@ -2,7 +2,7 @@ name: ETL - StreamSpot
 
 on:
   schedule:
-    - cron: "*/10 * * * *"   # 10분마다(UTC). KST 기준 +9h
+    - cron: "*/5 * * * *"   # 10분마다(UTC). KST 기준 +9h
   workflow_dispatch: {}      # 수동 실행 버튼
 
 permissions:
