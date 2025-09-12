@@ -4,6 +4,8 @@ import threading
 import requests
 from .config import HEADERS, DEFAULT_TIMEOUT, CATEGORY_STREAMS_BASE, category_streams_url,BASE, IMG_HEADERS, TYPE_CANDIDATES, EXT_CANDIDATES
 
+from pprint import pprint
+
 _thread_local = threading.local()
 def _get_session() -> requests.Session:
     s = getattr(_thread_local, "s", None)
@@ -16,6 +18,32 @@ def _get_session() -> requests.Session:
     return s
 
 class FetchError(Exception): pass
+
+def has_live_for_category(categoryType: str, categoryId: str, timeout=8) -> bool:
+    print(f"Checking live existence for {categoryId}...")
+    base = category_streams_url(categoryType, categoryId)  # v2
+    r = requests.get(base, params={"size": 1}, headers=HEADERS, timeout=timeout)
+    r.raise_for_status()
+    items = (r.json().get("content") or {}).get("data") or []
+    print("check to missing item :",items, len(items))
+    return len(items) > 0
+
+# extract.py
+def compute_totals_via_v2(category_type: str, category_id: str, page_size=100, timeout=10):
+    base = category_streams_url(category_type, category_id)
+    open_cnt = 0
+    conc_sum = 0
+
+    # v2 페이지 메타를 모르니, 넉넉히 한 번 크게 요청 (필요시 반복 로직 추가)
+    r = requests.get(base, params={"size": page_size}, headers=HEADERS, timeout=timeout)
+    r.raise_for_status()
+    items = (r.json().get("content") or {}).get("data") or []
+    open_cnt += len(items)
+    conc_sum += sum(int(x.get("concurrentUserCount") or 0) for x in items)
+
+    return {"openLiveCount": open_cnt, "concurrentUserCount": conc_sum}
+
+
 
 def fetch_page(next_params: dict | None = None,
     size: int = 50,
@@ -42,7 +70,6 @@ def fetch_page(next_params: dict | None = None,
         content = j.get("content", {})
         items = content.get("data", [])
         # 카테고리 배열
-        
         if not isinstance(items, list):
             raise FetchError(f"items is not a list: {type(items).__name__}")
 
@@ -55,8 +82,8 @@ def fetch_page(next_params: dict | None = None,
         return items, next_obj
     except Exception as e:
         last_err = e
-        if verbose: print(f"[fetch_page] warn: {e}")
-        raise FetchError(f"fetch_page failed: {last_err}")
+        print(f"[fetch_page] Error: {e}")
+        return [], None
 
 # 여러 페이지를 순회하며 특정 카테고리 ID 목록에 해당하는 카테고리 정보 수집 *Extract 2
 def summarize_categories(target_ids,
@@ -106,15 +133,8 @@ def summarize_categories(target_ids,
 
         sleep_with_jitter(*sleep_range)  # 레이트리밋
     missing = [t for t in target_ids if t not in found]
-    if missing:
-        # 전부 필요하므로, 어떤 종료 사유든 '실패'로 본다.
-        raise FetchError(
-            f"summarize_categories failed: missing={missing[:5]}... "
-            f"(total_missing={len(missing)})"
-            f"pages_scanned<={max_pages}"
-        )
-    # target_ids 순서를 보존해서 리스트로 반환
-    return [found[cid] for cid in target_ids if cid in found]
+    print("missing category: ",missing)
+    return [found[cid] for cid in target_ids if cid in found], missing
 
 def category_streams_url(categoryType: str, categoryId: str):
         return f"https://api.chzzk.naver.com/service/v2/categories/{categoryType}/{categoryId}/lives?"

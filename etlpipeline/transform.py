@@ -3,6 +3,8 @@ from zoneinfo import ZoneInfo
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from .utils import is_abs_url
 from .extract import resolve_thumb_url
+from .config import BAD_VALUES
+
 
 
 def transform_for_categories(raw_rows: list[dict]) -> list[dict]:
@@ -24,21 +26,21 @@ def transform_for_categories(raw_rows: list[dict]) -> list[dict]:
         if key in seen:
             continue
         seen.add(key)
-
-        out.append({
+        row={
             "id": cid,
             "created_at": cap_at,
-            "categoryValue": cvalue,
-            "post_url": posterImageUrl
-            
+            "categoryValue": cvalue,     
             ############### 추가 필드 필요시 여기에
             # updated_at은 DB default now()
-        })
+        }
+        if posterImageUrl and posterImageUrl.upper() not in BAD_VALUES:
+            row["post_url"] = posterImageUrl
+        out.append(row)
     return out
 
 
 def transform_for_category_totals(raw_rows: list[dict]) -> list[dict]:
-    print("Transforming for categories...")
+    print("Transforming for category totals...")
     seoul_now = datetime.now(ZoneInfo("Asia/Seoul"))
     out = []
     seen = set()  # category_id 중복 방지
